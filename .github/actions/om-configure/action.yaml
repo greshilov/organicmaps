@@ -1,0 +1,24 @@
+name: 'Organic maps configure'
+description: 'Configures repo before the build'
+inputs:
+  private:
+    description: 'Use private repo?'
+    required: false
+    default: 'false'
+runs:
+  using: "composite"
+  steps:
+    - name: Parallel submodules checkout
+      shell: bash
+      run: git submodule update --init --recursive --jobs=$(($(getconf _NPROCESSORS_ONLN) * 2))
+
+    - name: Configure repo
+      shell: bash
+      run: |
+        if [ ${{ inputs.private }} = 'true' ]; then
+          echo " -- Private repo is: ON"
+          ./configure.sh ./private.git
+          rm -rf ./private.git
+        else
+          ./configure.sh
+        fi

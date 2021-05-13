@@ -27,13 +27,8 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v2
 
-      - name: Parallel submodules checkout
-        shell: bash
-        run: git submodule update --init --recursive --jobs=4
-
-      - name: Configure
-        shell: bash
-        run: ./configure.sh
+      - name: Configure repo
+        uses: ./.github/actions/om-configure
 
       - name: Compile
         shell: bash

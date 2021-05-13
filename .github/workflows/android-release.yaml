@@ -10,6 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Checkout private keys
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ssh-key: ${{ secrets.PRIVATE_SSH_KEY }}
+          ref: master
+          path: private.git
+
+      - name: Configure repo
+        uses: ./.github/actions/om-configure
+        with:
+          private: "true"
+
       - name: Install build tools and dependencies
         shell: bash
         run: |
@@ -20,27 +36,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Parallel submodules checkout
-        shell: bash
-        run: git submodule update --init --recursive --jobs=$(($(nproc) * 2))
-
-      - name: Checkout private keys
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          ssh-key: ${{ secrets.PRIVATE_SSH_KEY }}
-          ref: master
-          path: private.git
-
-      - name: Configure repo with private keys
-        shell: bash
-        run: |
-          ./configure.sh ./private.git
-          rm -rf ./private.git
 
       - name: Set up SDK
         shell: bash
@@ -64,6 +59,22 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Checkout private keys
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ssh-key: ${{ secrets.PRIVATE_SSH_KEY }}
+          ref: master
+          path: private.git
+
+      - name: Configure repo
+        uses: ./.github/actions/om-configure
+        with:
+          private: "true"
+
       - name: Install build tools and dependencies
         shell: bash
         run: |
@@ -74,27 +85,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Parallel submodules checkout
-        shell: bash
-        run: git submodule update --init --recursive --jobs=$(($(nproc) * 2))
-
-      - name: Checkout private keys
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          ssh-key: ${{ secrets.PRIVATE_SSH_KEY }}
-          ref: master
-          path: private.git
-
-      - name: Configure repo with private keys
-        shell: bash
-        run: |
-          ./configure.sh ./private.git
-          rm -rf ./private.git
 
       - name: Set up SDK
         shell: bash
